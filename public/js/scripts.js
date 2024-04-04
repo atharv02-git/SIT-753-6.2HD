@@ -1,28 +1,3 @@
-const cardList = [
-    {
-        title: "Kitten 2",
-        image: "images/kitten-2.jpg",
-        link: "About Kitten 2",
-        desciption: "Demo desciption about kitten 2"
-    },
-    {
-        title: "Kitten 3",
-        image: "images/kitten-3.jpg",
-        link: "About Kitten 3",
-        desciption: "Demo desciption about kitten 3"
-    }
-]
-const clickMe = () => {
-    alert("Thanks for clicking me. Hope you have a nice day!")
-}
-const submitForm = () => {
-    let formData = {};
-    formData.first_name = $('#first_name').val();
-    formData.last_name = $('#last_name').val();
-    formData.password = $('#password').val();
-    formData.email = $('#email').val();
-    console.log("Form Data Submitted: ", formData);
-}
 const addCards = (items) => {
     items.forEach(item => {
         let itemToAppend = '<div class="col s4 center-align">' +
@@ -36,11 +11,47 @@ const addCards = (items) => {
         $("#card-section").append(itemToAppend)
     });
 }
-$(document).ready(function () {
-    $('.materialboxed').materialbox();
-    $('#formSubmit').click(() => {
-        submitForm();
+
+const clickMe = () => {
+    alert("Thanks for clicking me. Hope you have a nice day!")
+}
+
+const submitForm = () => {
+    let formData = {};
+    formData.title = $('#title').val();
+    formData.path = $('#path').val();
+    formData.link = $('#link').val();
+    formData.description = $('#description').val();
+    
+    console.log("Form Data Submitted: ", formData);
+    postCat(formData);
+}
+
+function getCats() {
+    $.get('api/cats', (response) => {
+        console.log(response.data);
+        if (response.data) {
+            addCards(response.data);
+        }
     })
-    addCards(cardList);
+}
+
+function postCat(cat) {
+    $.ajax({
+        url: 'api/cat',
+        data: cat,
+        type: 'POST',
+        success: (result) => {
+            console.log(result.data);
+        }
+    })
+}
+
+$(document).ready(function(){
+    $('.materialboxed').materialbox();
+    getCats();
     $('.modal').modal();
+    $('#formSubmit').click(()=>{
+        submitForm();
+    });
 });
