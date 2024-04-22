@@ -38,7 +38,7 @@ function getCats() {
 
 function postCat(cat) {
     $.ajax({
-        url: '/api/cat',
+        url: '/api/cats',
         data: cat,
         type: 'POST',
         success: (result) => {
