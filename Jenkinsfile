@@ -14,7 +14,7 @@ pipeline{
         // stage checkout
         stage('Checkout') {
             steps {
-                git url: 'https://github.com/your-username/your-repo.git', branch: 'main'
+                git url: 'https://github.com/atharv02-git/SIT-753-6.2HD.git', branch: 'main'
             }
         }
         // Build Stage
