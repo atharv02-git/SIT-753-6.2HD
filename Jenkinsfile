@@ -1,12 +1,25 @@
 pipeline {
     agent any
+    tools {
+        maven '3.9.6'
+    }
 
     stages {
+        stage('Checkout') {
+            steps {
+                echo 'Checking out code from GitHub...'
+                git url: 'https://github.com/atharv02-git/SIT-753-6.2HD.git', branch: 'main'
+            }
+        }
+
         stage('Build') {
             steps {
                 echo 'Building...'
                 // Add your build commands here, e.g., mvn clean install for a Maven project
-                sh 'mvn clean install'
+               // Print the directory contents to ensure the pom.xml is present
+                bat 'dir'
+                // Run Maven to clean and package the project
+                bat 'mvn clean package'
             }
         }
 
@@ -14,7 +27,7 @@ pipeline {
             steps {
                 echo 'Testing...'
                 // Add your test commands here, e.g., mvn test for a Maven project
-                sh 'mvn test'
+                bat 'mvn test'
             }
         }
 
