@@ -4,9 +4,12 @@ pipeline{
     tools {
         maven 'Maven 3.9.6'
         jdk 'JDK 11'
+        // SonarQube Scanner tool configuration
+        sonarqubeScanner 'SonarQube Scanner'
     }
 
     environment {
+        // SONARQUBE_SCANNER_HOME = tool name: 'SonarQube Scanner', type: 'hudson.plugins.sonar.SonarRunnerInstallation'
         SONARQUBE_SCANNER_HOME = tool name: 'SonarQube Scanner', type: 'hudson.plugins.sonar.SonarRunnerInstallation'
     }
 
