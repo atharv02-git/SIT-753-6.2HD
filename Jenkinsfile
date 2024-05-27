@@ -39,7 +39,7 @@ pipeline{
             steps {
                 echo 'Analyzing Code Quality...'
                 withSonarQubeEnv('SonarQube') {
-                    sh "${env.SONARQUBE_SCANNER_HOME}/bin/sonar-scanner"
+                    sh 'sonar-scanner'
                 }
             }
         }
