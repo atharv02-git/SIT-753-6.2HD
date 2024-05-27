@@ -1,51 +1,51 @@
 pipeline {
     agent any
-    
+
     stages {
-        stage('Checkout') {
-            steps {
-                // Checkout the code from your Git repository
-                git url: 'https://github.com/atharv02-git/SIT-753-6.2HD.git', branch: 'main'
-            }
-        }
-        
         stage('Build') {
             steps {
-                // Build your project, replace with actual build command
-                sh 'echo "Building..."'
+                echo 'Building...'
+                // Add your build commands here, e.g., mvn clean install for a Maven project
+                sh 'mvn clean install'
             }
         }
-        
+
         stage('Test') {
             steps {
-                // Run tests, replace with actual test command
-                sh 'echo "Running tests..."'
+                echo 'Testing...'
+                // Add your test commands here, e.g., mvn test for a Maven project
+                sh 'mvn test'
             }
         }
-        
+
         stage('Deploy') {
             steps {
-                // Deploy your application, replace with actual deployment command
-                sh 'echo "Deploying..."'
+                echo 'Deploying...'
+                // Add your deploy commands here, e.g., copying files to a server
+                // sh 'scp target/myapp.jar user@server:/path/to/deploy/'
+                // or using a deploy tool, e.g., Ansible, Docker, etc.
             }
         }
-        
+
         stage('Release') {
             steps {
-                // Tag the release in your version control system, replace with actual release command
-                sh 'echo "Releasing..."'
+                echo 'Releasing...'
+                // Add your release commands here, e.g., tagging the repo, notifying stakeholders
+                // sh 'git tag -a v1.0 -m "Release version 1.0"'
+                // sh 'git push origin --tags'
+                // or notifying stakeholders via email or messaging service
             }
         }
     }
-    
+
     post {
         success {
             echo 'Pipeline completed successfully!'
-            // Send notifications or perform other actions on success
+            // You can add notifications for successful builds here
         }
         failure {
             echo 'Pipeline failed!'
-            // Send notifications or perform other actions on failure
+            // You can add notifications for failed builds here
         }
     }
 }
