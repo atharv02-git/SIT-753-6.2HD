@@ -1,64 +1,47 @@
-pipeline{
+pipeline {
     agent any
-
-    tools {
-        maven 'Maven 3.9.6'
-        jdk 'JDK 11'
-        // SonarQube Scanner tool configuration
-        sonarqubeScanner 'SonarQube Scanner'
-    }
-
+    
     environment {
-        // SONARQUBE_SCANNER_HOME = tool name: 'SonarQube Scanner', type: 'hudson.plugins.sonar.SonarRunnerInstallation'
-        SONARQUBE_SCANNER_HOME = tool name: 'SonarQube Scanner', type: 'hudson.plugins.sonar.SonarRunnerInstallation'
+        // Define environment variables if needed
     }
-
+    
     stages {
-        // stage checkout
         stage('Checkout') {
             steps {
+                // Checkout the code from your Git repository
                 git url: 'https://github.com/atharv02-git/SIT-753-6.2HD.git', branch: 'main'
             }
         }
-        // Build Stage
+        
         stage('Build') {
             steps {
-                echo 'Building...'
-                sh 'mvn clean install'
+                // Build your project, replace with actual build command
+                sh 'echo "Building..."'
             }
         }
-        // Test stage
+        
         stage('Test') {
             steps {
-                echo 'Testing...'
-                sh 'mvn test'
+                // Run tests, replace with actual test command
+                sh 'echo "Running tests..."'
             }
         }
-        // Code quality Analysing
-        stage('Code Quality Analysis') {
+        
+        stage('Deploy') {
             steps {
-                echo 'Analyzing Code Quality...'
-                withSonarQubeEnv('SonarQube') {
-                    sh 'sonar-scanner'
-                }
+                // Deploy your application, replace with actual deployment command
+                sh 'echo "Deploying..."'
             }
         }
-        // Stage Deploy
-        stage('Deploy'){
-            steps {
-                echo 'Deploying...'
-                sh 'scp target/your-webapp.war user@server:/path/to/deploy/'
-            }
-        }
-        // Stage Release
+        
         stage('Release') {
             steps {
-                echo 'Releasing...'
-                sh 'git tag -a v1.0 -m "Release version 1.0"'
-                sh 'git push origin --tags'
+                // Tag the release in your version control system, replace with actual release command
+                sh 'echo "Releasing..."'
             }
         }
     }
+    
     post {
         success {
             echo 'Pipeline completed successfully!'
