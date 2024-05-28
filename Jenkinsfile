@@ -1,64 +1,80 @@
 pipeline {
     agent any
+
+    environment {
+        // Define environment variables here if needed
+        NODE_VERSION = '14'
+    }
+
     tools {
-        maven '3.9.6'
+        nodejs "${NODE_VERSION}"
     }
 
     stages {
         stage('Checkout') {
             steps {
-                echo 'Checking out code from GitHub...'
-                git url: 'https://github.com/atharv02-git/SIT-753-6.2HD.git', branch: 'main'
+                // Clone the repository
+                git branch: 'main', url: 'https://github.com/atharv02-git/SIT-753-6.2HD.git'
             }
         }
 
         stage('Build') {
             steps {
-                echo 'Building...'
-                // Add your build commands here, e.g., mvn clean install for a Maven project
-               // Print the directory contents to ensure the pom.xml is present
-                bat 'dir'
-                // Run Maven to clean and package the project
-                bat 'mvn clean package'
+                // Build the Node.js application
+                bat 'npm install'
+                bat 'npm run build'
             }
         }
 
         stage('Test') {
             steps {
-                echo 'Testing...'
-                // Add your test commands here, e.g., mvn test for a Maven project
-                bat 'mvn test'
+                // Run tests
+                bat 'npm test'
             }
         }
 
-        stage('Deploy') {
+        stage('Code Quality Analysis') {
             steps {
-                echo 'Deploying...'
-                // Add your deploy commands here, e.g., copying files to a server
-                // sh 'scp target/myapp.jar user@server:/path/to/deploy/'
-                // or using a deploy tool, e.g., Ansible, Docker, etc.
+                // Run SonarQube analysis
+                withSonarQubeEnv('SonarQube') {
+                    bat 'sonar-scanner -Dsonar.projectKey=my-nodejs-app -Dsonar.sources=. -Dsonar.host.url=http://your-sonarqube-server:9000'
+                }
             }
         }
 
-        stage('Release') {
+        stage('Deploy to Staging') {
             steps {
-                echo 'Releasing...'
-                // Add your release commands here, e.g., tagging the repo, notifying stakeholders
-                // sh 'git tag -a v1.0 -m "Release version 1.0"'
-                // sh 'git push origin --tags'
-                // or notifying stakeholders via email or messaging service
+                // Deploy to a staging environment
+                bat '''
+                powershell -Command "Copy-Item -Recurse -Force * \\\\your-staging-server\\path\\to\\deployment\\dir"
+                powershell -Command "Invoke-Command -ComputerName your-staging-server -ScriptBlock { cd C:\\path\\to\\deployment\\dir; npm install --production; pm2 restart all }"
+                '''
+            }
+        }
+
+        stage('Release to Production') {
+            steps {
+                // Deploy to production
+                bat '''
+                powershell -Command "Copy-Item -Recurse -Force * \\\\your-production-server\\path\\to\\deployment\\dir"
+                powershell -Command "Invoke-Command -ComputerName your-production-server -ScriptBlock { cd C:\\path\\to\\deployment\\dir; npm install --production; pm2 restart all }"
+                '''
+            }
+        }
+
+        stage('Monitoring and Alerting') {
+            steps {
+                // Configure monitoring and alerting
+                echo 'Monitoring setup (e.g., Datadog, New Relic)'
+                // Placeholder for actual monitoring setup
             }
         }
     }
 
     post {
-        success {
-            echo 'Pipeline completed successfully!'
-            // You can add notifications for successful builds here
-        }
-        failure {
-            echo 'Pipeline failed!'
-            // You can add notifications for failed builds here
+        always {
+            // Clean up actions
+            cleanWs()
         }
     }
 }
